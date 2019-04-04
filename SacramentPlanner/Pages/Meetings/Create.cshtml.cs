@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using SacramentPlanner.Models;
 
 namespace SacramentPlanner.Pages.Meetings
@@ -33,10 +30,18 @@ namespace SacramentPlanner.Pages.Meetings
                 return Page();
             }
 
-            _context.Meeting.Add(Meeting);
-            await _context.SaveChangesAsync();
+            var emptyMeeting = new Meeting();
 
-            return RedirectToPage("./Index");
+            if (await TryUpdateModelAsync<Meeting>(
+                emptyMeeting,
+                "meeting",   // Prefix for form value.
+                s => s.Conductor, s => s.Date))
+            {
+                _context.Meeting.Add(emptyMeeting);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }
+            return Page();
         }
     }
 }

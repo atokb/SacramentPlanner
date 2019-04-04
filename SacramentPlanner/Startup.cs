@@ -37,7 +37,8 @@ namespace SacramentPlanner
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<SacramentPlannerContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("SacramentPlannerContext")));
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("SacramentPlannerContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

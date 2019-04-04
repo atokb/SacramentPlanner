@@ -27,7 +27,10 @@ namespace SacramentPlanner.Pages.Meetings
                 return NotFound();
             }
 
-            Meeting = await _context.Meeting.FirstOrDefaultAsync(m => m.ID == id);
+            Meeting = await _context.Meeting
+                                .Include(s => s.Members)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(m => m.ID == id);
 
             if (Meeting == null)
             {

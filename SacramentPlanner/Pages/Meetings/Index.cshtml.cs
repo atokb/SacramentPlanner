@@ -11,29 +11,44 @@ namespace SacramentPlanner.Pages.Meetings
 {
     public class IndexModel : PageModel
     {
-        private readonly SacramentPlanner.Models.SacramentPlannerContext _context;
+        private readonly SacramentPlannerContext _context;
 
-        public IndexModel(SacramentPlanner.Models.SacramentPlannerContext context)
+        public IndexModel(SacramentPlannerContext context)
         {
             _context = context;
         }
 
-        public IList<Meeting> Meeting { get;set; }
-        [BindProperty(SupportsGet = true)]
-        public string SearchString { get; set; }
-        //public SelectList MeetingConductor { get; set; }
-        [BindProperty(SupportsGet = true)]
-        public string Conductor { get; set; }
+        public string ConductorSort { get; set; }
+        public string DateSort { get; set; }
+        public string CurrentFilter { get; set; }
+        public string CurrentSort { get; set; }
+        public List<Meeting> Meeting { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string sortOrder)
         {
-            var meetings = from m in _context.Meeting
-                           select m;
-            if (!string.IsNullOrEmpty(SearchString))
+            ConductorSort = String.IsNullOrEmpty(sortOrder) ? "conductor_desc" : "";
+            DateSort = sortOrder == "Date" ? "date_desc" : "Date";
+
+            IQueryable<Meeting> meetingIQ = from s in _context.Meeting
+                                            select s;
+
+            switch (sortOrder)
             {
-                meetings = meetings.Where(s => s.Conductor.Contains(SearchString));
+                case "conductor_desc":
+                    meetingIQ = meetingIQ.OrderByDescending(s => s.Conductor);
+                    break;
+                case "Date":
+                    meetingIQ = meetingIQ.OrderBy(s => s.Date);
+                    break;
+                case "date_desc":
+                    meetingIQ = meetingIQ.OrderByDescending(s => s.Date);
+                    break;
+                default:
+                    meetingIQ = meetingIQ.OrderBy(s => s.Conductor);
+                    break;
             }
-            Meeting = await meetings.ToListAsync();
+
+            Meeting = await meetingIQ.AsNoTracking().ToListAsync();
         }
     }
 }

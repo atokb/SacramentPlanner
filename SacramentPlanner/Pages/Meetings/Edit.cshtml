@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:int?}"
 @model SacramentPlanner.Pages.Meetings.EditModel
 
 @{
@@ -22,9 +22,7 @@
             <div class="form-group">
                 <label asp-for="Meeting.HymnID" class="control-label"></label>
                 <input asp-for="Meeting.HymnID" class="form-control" />
-                <span asp-validation-for="Meeting.HymnID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+                <span asp-validation-for="Meeting.HymnID" class="text-danger"></span>            <div class="form-group">
                 <label asp-for="Meeting.Date" class="control-label"></label>
                 <input asp-for="Meeting.Date" class="form-control" />
                 <span asp-validation-for="Meeting.Date" class="text-danger"></span>

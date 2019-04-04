@@ -2,10 +2,10 @@
 @model SacramentPlanner.Pages.Meetings.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Plans";
 }
 
-<h1>Index</h1>
+<h1>Plans</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
@@ -20,10 +20,14 @@
                 @Html.DisplayNameFor(model => model.Meeting[0].HymnID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Meeting[0].Date)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort">
+                    @Html.DisplayNameFor(model => model.Meeting[0].Date)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Meeting[0].Conductor)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.ConductorSort">
+                    @Html.DisplayNameFor(model => model.Meeting[0].Conductor)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Meeting[0].OpeningHymn)

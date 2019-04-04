@@ -11,29 +11,39 @@ namespace SacramentPlanner.Pages.Meetings
 {
     public class DeleteModel : PageModel
     {
-        private readonly SacramentPlanner.Models.SacramentPlannerContext _context;
+        private readonly SacramentPlannerContext _context;
 
-        public DeleteModel(SacramentPlanner.Models.SacramentPlannerContext context)
+        public DeleteModel(SacramentPlannerContext context)
         {
             _context = context;
         }
 
         [BindProperty]
         public Meeting Meeting { get; set; }
+        public string ErrorMessage { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+
+        public async Task<IActionResult> OnGetAsync(int? id, bool? saveChangesError = false)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Meeting = await _context.Meeting.FirstOrDefaultAsync(m => m.ID == id);
+            Meeting = await _context.Meeting
+        .AsNoTracking()
+        .FirstOrDefaultAsync(m => m.ID == id);
 
             if (Meeting == null)
             {
                 return NotFound();
             }
+
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ErrorMessage = "Delete failed. Try again";
+            }
+
             return Page();
         }
 
@@ -44,15 +54,27 @@ namespace SacramentPlanner.Pages.Meetings
                 return NotFound();
             }
 
-            Meeting = await _context.Meeting.FindAsync(id);
+            var meeting = await _context.Meeting
+                   .AsNoTracking()
+                   .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (Meeting != null)
+            if (meeting == null)
             {
-                _context.Meeting.Remove(Meeting);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
-            return RedirectToPage("./Index");
+            try
+            {
+                _context.Meeting.Remove(meeting);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                return RedirectToAction("./Delete",
+                                     new { id, saveChangesError = true });
+            }
         }
     }
 }

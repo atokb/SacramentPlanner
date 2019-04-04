@@ -7,7 +7,6 @@ namespace SacramentPlanner.Models
     public class Meeting
     {
         public int ID { get; set; }
-
         public int MemberID { get; set; }
 
         public int HymnID { get; set; }
@@ -17,27 +16,27 @@ namespace SacramentPlanner.Models
         public DateTime Date { get; set; }
 
         [Required]
-        public String Conductor { get; set; }
+        public string Conductor { get; set; }
 
         [Display(Name = "Opening Hymn")]
         public int OpeningHymn { get; set; }
 
         [Display(Name = "Opening Prayer")]
         [Required]
-        public String OpeningPrayer { get; set; }
+        public string OpeningPrayer { get; set; }
 
         [Display(Name = "Sacrament Hymn")]
         public int SacramentHymn { get; set; }
 
         [Display(Name = "Intermediate Song")]
-        public String IntermediateSong { get; set; }
+        public string IntermediateSong { get; set; }
 
         [Display(Name = "Closing Hymn")]
         public int ClosingHymn { get; set; }
         
         [Display(Name = "Closing Prayer")]
         [Required]
-        public String ClosingPrayer { get; set; }
+        public string ClosingPrayer { get; set; }
 
         public virtual ICollection<Member> Members { get; set; }
         public virtual ICollection<Hymn> Hymns { get; set; }

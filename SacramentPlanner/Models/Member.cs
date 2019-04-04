@@ -9,14 +9,12 @@ namespace SacramentPlanner.Models
     {
         public int MemberID { get; set; }
 
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Calling { get; set; }
         public int MeetingID { get; set; }
 
-        public String FirstName { get; set; }
-
-        public String LastName { get; set; }
-
-        public String Calling { get; set; }
-
+        public Meeting Meeting{ get; set; }
 
 
     }

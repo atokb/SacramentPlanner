@@ -12,9 +12,9 @@ namespace SacramentPlanner.Pages.Meetings
 {
     public class EditModel : PageModel
     {
-        private readonly SacramentPlanner.Models.SacramentPlannerContext _context;
+        private readonly SacramentPlannerContext _context;
 
-        public EditModel(SacramentPlanner.Models.SacramentPlannerContext context)
+        public EditModel(SacramentPlannerContext context)
         {
             _context = context;
         }
@@ -29,7 +29,7 @@ namespace SacramentPlanner.Pages.Meetings
                 return NotFound();
             }
 
-            Meeting = await _context.Meeting.FirstOrDefaultAsync(m => m.ID == id);
+            Meeting = await _context.Meeting.FindAsync(id);
 
             if (Meeting == null)
             {
@@ -38,37 +38,25 @@ namespace SacramentPlanner.Pages.Meetings
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Meeting).State = EntityState.Modified;
+            var meetingToUpdate = await _context.Meeting.FindAsync(id);
 
-            try
+            if (await TryUpdateModelAsync<Meeting>(
+                meetingToUpdate,
+                "student",
+                s => s.Conductor, s => s.Date))
             {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MeetingExists(Meeting.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
-        }
-
-        private bool MeetingExists(int id)
-        {
-            return _context.Meeting.Any(e => e.ID == id);
+            return Page();
         }
     }
 }
