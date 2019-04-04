@@ -19,10 +19,21 @@ namespace SacramentPlanner.Pages.Meetings
         }
 
         public IList<Meeting> Meeting { get;set; }
+        [BindProperty(SupportsGet = true)]
+        public string SearchString { get; set; }
+        //public SelectList MeetingConductor { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string Conductor { get; set; }
 
         public async Task OnGetAsync()
         {
-            Meeting = await _context.Meeting.ToListAsync();
+            var meetings = from m in _context.Meeting
+                           select m;
+            if (!string.IsNullOrEmpty(SearchString))
+            {
+                meetings = meetings.Where(s => s.Conductor.Contains(SearchString));
+            }
+            Meeting = await meetings.ToListAsync();
         }
     }
 }
